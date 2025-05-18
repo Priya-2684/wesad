@@ -12,22 +12,16 @@ from xgboost import XGBClassifier
 # --- Page configuration ---
 st.set_page_config(page_title="Stress Prediction", layout="centered")
 
-# --- Logo ---
-st.image("Logo.jpg", width=100)
-
 # --- Custom CSS for Background and Fonts ---
 st.markdown("""
     <style>
-        body {
-            background-color: #111;
+        .main {
+            background-color: #111111;
             color: #f0f0f0;
         }
-        .stTextInput > div > div > input {
-            background-color: #222;
-            color: white;
-        }
+        .stTextInput > div > div > input,
         .stNumberInput > div > div > input {
-            background-color: #222;
+            background-color: #222222;
             color: white;
         }
         .stButton > button {
@@ -39,8 +33,22 @@ st.markdown("""
             text-align: center;
             color: white;
         }
+        /* Center logo image */
+        .center-logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
     </style>
 """, unsafe_allow_html=True)
+
+# --- Centered Logo ---
+st.markdown(
+    """<div class="center-logo">
+        <img src="Logo.jpg" width="120">
+    </div>""",
+    unsafe_allow_html=True
+)
 
 # --- Title ---
 st.title("🤖 Stress Prediction Using ML")
@@ -100,22 +108,22 @@ temp_input = st.number_input("Temperature", min_value=0.0, value=40.60, step=0.1
 if st.button("Predict Stress Level"):
     input_data = np.array([[eda_input, resp_input, temp_input]])
     pred = model.predict(input_data)[0]
-    
+
     reverse_le = dict(zip(le.transform(le.classes_), le.classes_))
     original_label = reverse_le[pred]
-    
+
     label_map = {
         1: "No Stress (Baseline)",
         2: "Stress",
         3: "No Stress (Amusement)"
     }
     result = label_map.get(original_label, "Unknown")
-    
+
     if result == "Stress":
         st.error(f"Predicted Result: {result}")
     else:
         st.success(f"Predicted Result: {result}")
-    
+
     # Prepare content for download
     filename = f"stress_prediction_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
     content = f"""STRESS PREDICTION RESULT
